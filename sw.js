@@ -1,7 +1,10 @@
-const CACHE_NAME = 'zakat-calculator-v1';
+const CACHE_NAME = 'zakat-calculator-v2';
 const urlsToCache = [
-  '/index.html',
-  '/manifest.json'
+  '/ZakatCalculator/',
+  '/ZakatCalculator/index.html',
+  '/ZakatCalculator/manifest.json',
+  '/ZakatCalculator/icon-192.png',
+  '/ZakatCalculator/icon-512.png'
 ];
 
 // Install service worker and cache files
