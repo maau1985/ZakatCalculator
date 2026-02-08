@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Zakat Calculator">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <title>Zakat Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0;
+            background: white;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 15px;
+            padding-bottom: 80px;
+        }
+        
+        .gold-rate-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .rate-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        
+        .rate-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .rate-input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid white;
+            border-radius: 10px;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            background: white;
+            color: #333;
+        }
+        
+        .rate-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
+        }
+        
+        .currency-symbol {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        
+        .settings-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+        }
+        
+        .setting-label {
+            font-size: 0.9em;
+            color: #666;
+            font-weight: 600;
+        }
+        
+        .setting-input {
+            width: 80px;
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1em;
+        }
+        
+        .person-card {
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .person-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .person-name {
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+        
+        .person-body {
+            padding: 15px;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-label {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 5px;
+            display: block;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1.1em;
+            transition: border-color 0.3s;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .result-box {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .result-label {
+            font-size: 0.75em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .result-value {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .summary-card {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
+            z-index: 99;
+        }
+        
+        .summary-title {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        .summary-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+        
+        .summary-label {
+            font-size: 0.7em;
+            opacity: 0.9;
+            margin-bottom: 3px;
+        }
+        
+        .summary-value {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        
+        .btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+        
+        .btn:active {
+            transform: scale(0.95);
+        }
+        
+        .delete-btn {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            border: 2px solid white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 0.85em;
+        }
+        
+        .add-person-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        
+        .add-person-btn:active {
+            transform: scale(0.98);
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .modal-title {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .modal-btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .modal-btn-secondary {
+            background: #f8f9fa;
+            color: #666;
+        }
+        
+        /* Color variations for person cards */
+        .person-card:nth-child(4n+1) .person-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .person-card:nth-child(4n+2) .person-header {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+        
+        .person-card:nth-child(4n+3) .person-header {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+        
+        .person-card:nth-child(4n+4) .person-header {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+        }
+        
+        /* Install prompt */
+        .install-prompt {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        
+        .install-prompt.hidden {
+            display: none;
+        }
+        
+        .install-text {
+            flex: 1;
+        }
+        
+        .install-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .install-desc {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌙 Zakat Calculator</h1>
+            <p>Track and Calculate Zakat on Gold</p>
+        </div>
+        
+        <div class="content">
+            <!-- Install Prompt -->
+            <div id="installPrompt" class="install-prompt hidden">
+                <div class="install-text">
+                    <div class="install-title">Install App</div>
+                    <div class="install-desc">Add to home screen for quick access</div>
+                </div>
+                <button class="btn" onclick="installApp()">Install</button>
+            </div>
+            
+            <!-- Gold Rate Card -->
+            <div class="gold-rate-card">
+                <div class="rate-label">22 Carat Gold Rate (per gram)</div>
+                <div class="rate-input-group">
+                    <span class="currency-symbol">₹</span>
+                    <input type="number" class="rate-input" id="goldRate" value="14090" 
+                           onchange="saveData(); calculateAll()" step="1">
+                </div>
+            </div>
+            
+            <!-- Settings Card -->
+            <div class="settings-card">
+                <div class="setting-row">
+                    <span class="setting-label">Value Adjustment (%)</span>
+                    <input type="number" class="setting-input" id="adjustmentPercent" 
+                           value="85" step="1" onchange="saveData(); calculateAll()">
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label">Zakat Rate (%)</span>
+                    <input type="number" class="setting-input" id="zakatRate" 
+                           value="2.5" step="0.1" onchange="saveData(); calculateAll()">
+                </div>
+            </div>
+            
+            <!-- Add Person Button -->
+            <button class="add-person-btn" onclick="showAddPersonModal()">+ Add Person</button>
+            
+            <!-- People Cards -->
+            <div id="peopleContainer"></div>
+        </div>
+        
+        <!-- Summary Card -->
+        <div class="summary-card">
+            <div class="summary-title">Total Summary</div>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="summary-label">Gold</div>
+                    <div class="summary-value" id="totalWeight">0g</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Value</div>
+                    <div class="summary-value" id="totalValue">₹0</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Zakat</div>
+                    <div class="summary-value" id="totalZakat">₹0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Person Modal -->
+    <div id="addPersonModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">Add New Person</div>
+            <div class="input-group">
+                <label class="input-label">Name</label>
+                <input type="text" class="input-field" id="newPersonName" placeholder="Enter name">
+            </div>
+            <div class="input-group">
+                <label class="input-label">Gold Weight (grams)</label>
+                <input type="number" class="input-field" id="newPersonWeight" placeholder="0" step="0.001">
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-secondary" onclick="closeAddPersonModal()">Cancel</button>
+                <button class="modal-btn modal-btn-primary" onclick="addPerson()">Add</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // PWA Install
+        let deferredPrompt;
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installPrompt').classList.remove('hidden');
+        });
+        
+        async function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                deferredPrompt = null;
+                document.getElementById('installPrompt').classList.add('hidden');
+            }
+        }
+        
+        // Data structure
+        let people = [
+            { id: 1, name: 'Mom', weight: 246 },
+            { id: 2, name: 'Zubair', weight: 258 },
+            { id: 3, name: 'Awais', weight: 265 },
+            { id: 4, name: 'Umair', weight: 207 }
+        ];
+        
+        let nextId = 5;
+        
+        // Format number
+        function formatNumber(num) {
+            return new Intl.NumberFormat('en-IN', {
+                maximumFractionDigits: 0
+            }).format(num);
+        }
+        
+        // Save data to localStorage
+        function saveData() {
+            const data = {
+                goldRate: document.getElementById('goldRate').value,
+                adjustmentPercent: document.getElementById('adjustmentPercent').value,
+                zakatRate: document.getElementById('zakatRate').value,
+                people: people,
+                nextId: nextId
+            };
+            localStorage.setItem('zakatData', JSON.stringify(data));
+        }
+        
+        // Load data from localStorage
+        function loadData() {
+            const saved = localStorage.getItem('zakatData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                document.getElementById('goldRate').value = data.goldRate || 14090;
+                document.getElementById('adjustmentPercent').value = data.adjustmentPercent || 85;
+                document.getElementById('zakatRate').value = data.zakatRate || 2.5;
+                people = data.people || people;
+                nextId = data.nextId || nextId;
+            }
+        }
+        
+        // Calculate for one person
+        function calculatePerson(personId) {
+            const person = people.find(p => p.id === personId);
+            if (!person) return;
+            
+            const goldRate = parseFloat(document.getElementById('goldRate').value) || 0;
+            const adjustmentPercent = parseFloat(document.getElementById('adjustmentPercent').value) || 85;
+            const zakatRate = parseFloat(document.getElementById('zakatRate').value) || 2.5;
+            
+            const weightInput = document.getElementById(`weight_${personId}`);
+            person.weight = parseFloat(weightInput.value) || 0;
+            
+            const totalValue = person.weight * goldRate;
+            const adjustedValue = totalValue * (adjustmentPercent / 100);
+            const zakatAmount = adjustedValue * (zakatRate / 100);
+            
+            document.getElementById(`value_${personId}`).textContent = '₹' + formatNumber(adjustedValue);
+            document.getElementById(`zakat_${personId}`).textContent = '₹' + formatNumber(zakatAmount);
+            
+            saveData();
+            updateSummary();
+        }
+        
+        // Calculate all
+        function calculateAll() {
+            people.forEach(person => calculatePerson(person.id));
+        }
+        
+        // Update summary
+        function updateSummary() {
+            const goldRate = parseFloat(document.getElementById('goldRate').value) || 0;
+            const adjustmentPercent = parseFloat(document.getElementById('adjustmentPercent').value) || 85;
+            const zakatRate = parseFloat(document.getElementById('zakatRate').value) || 2.5;
+            
+            let totalWeight = 0;
+            let totalValue = 0;
+            let totalZakat = 0;
+            
+            people.forEach(person => {
+                totalWeight += person.weight;
+                const value = person.weight * goldRate * (adjustmentPercent / 100);
+                totalValue += value;
+                totalZakat += value * (zakatRate / 100);
+            });
+            
+            document.getElementById('totalWeight').textContent = formatNumber(totalWeight) + 'g';
+            document.getElementById('totalValue').textContent = '₹' + formatNumber(totalValue);
+            document.getElementById('totalZakat').textContent = '₹' + formatNumber(totalZakat);
+        }
+        
+        // Render people
+        function renderPeople() {
+            const container = document.getElementById('peopleContainer');
+            container.innerHTML = '';
+            
+            people.forEach(person => {
+                const card = document.createElement('div');
+                card.className = 'person-card';
+                card.innerHTML = `
+                    <div class="person-header">
+                        <div class="person-name">${person.name}</div>
+                        <button class="delete-btn" onclick="confirmDelete(${person.id})">Delete</button>
+                    </div>
+                    <div class="person-body">
+                        <div class="input-group">
+                            <label class="input-label">Gold Weight (grams)</label>
+                            <input type="number" class="input-field" id="weight_${person.id}" 
+                                   value="${person.weight}" step="0.001" 
+                                   onchange="calculatePerson(${person.id})">
+                        </div>
+                        <div class="results-grid">
+                            <div class="result-box">
+                                <div class="result-label">Adjusted Value</div>
+                                <div class="result-value" id="value_${person.id}">₹0</div>
+                            </div>
+                            <div class="result-box">
+                                <div class="result-label">Zakat Amount</div>
+                                <div class="result-value" id="zakat_${person.id}">₹0</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            
+            calculateAll();
+        }
+        
+        // Modal functions
+        function showAddPersonModal() {
+            document.getElementById('addPersonModal').classList.add('active');
+            document.getElementById('newPersonName').value = '';
+            document.getElementById('newPersonWeight').value = '';
+            document.getElementById('newPersonName').focus();
+        }
+        
+        function closeAddPersonModal() {
+            document.getElementById('addPersonModal').classList.remove('active');
+        }
+        
+        function addPerson() {
+            const name = document.getElementById('newPersonName').value.trim();
+            const weight = parseFloat(document.getElementById('newPersonWeight').value) || 0;
+            
+            if (!name) {
+                alert('Please enter a name');
+                return;
+            }
+            
+            people.push({
+                id: nextId++,
+                name: name,
+                weight: weight
+            });
+            
+            saveData();
+            renderPeople();
+            closeAddPersonModal();
+        }
+        
+        function confirmDelete(personId) {
+            const person = people.find(p => p.id === personId);
+            if (confirm(`Delete ${person.name}?`)) {
+                people = people.filter(p => p.id !== personId);
+                saveData();
+                renderPeople();
+            }
+        }
+        
+        // Initialize
+        window.addEventListener('load', () => {
+            loadData();
+            renderPeople();
+            
+            // Register service worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js');
+            }
+        });
+        
+        // Click outside modal to close
+        document.getElementById('addPersonModal').addEventListener('click', (e) => {
+            if (e.target.id === 'addPersonModal') {
+                closeAddPersonModal();
+            }
+        });
+    </script>
+</body>
+</html>
