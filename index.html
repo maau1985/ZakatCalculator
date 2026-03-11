@@ -512,15 +512,10 @@
             }
         }
         
-        // Data structure
-        let people = [
-            { id: 1, name: 'Mom', weight: 246 },
-            { id: 2, name: 'Zubair', weight: 258 },
-            { id: 3, name: 'Awais', weight: 265 },
-            { id: 4, name: 'Umair', weight: 207 }
-        ];
+        // Data structure - Start with empty list for new users
+        let people = [];
         
-        let nextId = 5;
+        let nextId = 1;
         
         // Format number
         function formatNumber(num) {
@@ -549,8 +544,8 @@
                 document.getElementById('goldRate').value = data.goldRate || 14090;
                 document.getElementById('adjustmentPercent').value = data.adjustmentPercent || 85;
                 document.getElementById('zakatRate').value = data.zakatRate || 2.5;
-                people = data.people || people;
-                nextId = data.nextId || nextId;
+                people = data.people || [];
+                nextId = data.nextId || 1;
             }
         }
         
